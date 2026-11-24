@@ -1,11 +1,11 @@
 import { RotateCcw } from "lucide-react"
 import { Button } from "./components/ui/button"
-import { useDispatch, useSelector } from "react-redux"
-import { decrement, increment } from "./redux/counter/counterSlice";
+import { decrement, incrementByValue, selectValue } from "./redux/counter/counterSlice";
+import { useAppDispatch, useAppSelector } from "./redux/hooks";
 
 function App() {
-  const value = useSelector((state) => state.counter.value);
-  const dispatch = useDispatch();
+  const value = useAppSelector(selectValue);
+  const dispatch = useAppDispatch();
 
   return (
     <main className="flex min-h-screen items-center justify-center p-4 text-slate-100">
@@ -38,7 +38,7 @@ function App() {
             type="button"
             size="lg"
             className="h-12 bg-violet-500 text-white hover:bg-violet-400"
-            onClick={() => dispatch(increment())}
+            onClick={() => dispatch(incrementByValue(5))}
             aria-label="Increase count"
           >
             <span className="text-2xl leading-none" aria-hidden="true">+</span>
@@ -49,7 +49,6 @@ function App() {
             size="lg"
             variant="outline"
             className="col-span-2 h-12 border-slate-700 bg-transparent text-slate-300 hover:bg-slate-800"
-            onClick={() => setCount(0)}
             aria-label="Reset count"
           >
             <RotateCcw aria-hidden="true" />
