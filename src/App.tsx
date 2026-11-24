@@ -1,9 +1,11 @@
-import { useState } from "react"
 import { RotateCcw } from "lucide-react"
 import { Button } from "./components/ui/button"
+import { useDispatch, useSelector } from "react-redux"
+import { decrement, increment } from "./redux/counter/counterSlice";
 
 function App() {
-  const [count, setCount] = useState(0)
+  const value = useSelector((state) => state.counter.value);
+  const dispatch = useDispatch();
 
   return (
     <main className="flex min-h-screen items-center justify-center p-4 text-slate-100">
@@ -17,7 +19,7 @@ function App() {
           className="my-8 text-8xl font-semibold tabular-nums"
           aria-live="polite"
         >
-          {count}
+          {value}
         </output>
 
         <div className="grid w-full grid-cols-[1fr_1fr] gap-3">
@@ -26,7 +28,7 @@ function App() {
             size="lg"
             variant="outline"
             className="h-12 border-slate-700 bg-slate-800 text-slate-100 hover:bg-slate-700"
-            onClick={() => setCount((currentCount) => currentCount - 1)}
+            onClick={() => dispatch(decrement())}
             aria-label="Decrease count"
           >
             <span className="text-2xl leading-none" aria-hidden="true">−</span>
@@ -36,7 +38,7 @@ function App() {
             type="button"
             size="lg"
             className="h-12 bg-violet-500 text-white hover:bg-violet-400"
-            onClick={() => setCount((currentCount) => currentCount + 1)}
+            onClick={() => dispatch(increment())}
             aria-label="Increase count"
           >
             <span className="text-2xl leading-none" aria-hidden="true">+</span>
