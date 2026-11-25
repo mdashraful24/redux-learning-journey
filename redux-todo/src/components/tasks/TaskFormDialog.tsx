@@ -13,12 +13,16 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { PRIORITY_LABELS, STATUS_LABELS, TASK_PRIORITIES, TASK_STATUS } from "@/redux/features/tasks";
+import { useAppDispatch } from "@/redux/hooks";
+import { addTask } from "@/redux/features/tasks/tasks.slice";
 
 export function TaskFormDialog({ open, mode, onClose }) {
   const { register, handleSubmit, control } = useForm();
+  const dispatch = useAppDispatch();
 
   const onSubmit = (values) => {
     console.log(values);
+    dispatch(addTask(values));
     onClose();
   };
 
