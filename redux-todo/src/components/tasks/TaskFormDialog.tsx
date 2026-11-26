@@ -16,7 +16,15 @@ import { PRIORITY_LABELS, STATUS_LABELS, TASK_PRIORITIES, TASK_STATUS } from "@/
 import { useAppDispatch } from "@/redux/hooks";
 import { addTask } from "@/redux/features/tasks/tasks.slice";
 
-export function TaskFormDialog({ open, mode, onClose }) {
+type TDialogMode = "edit" | "create";
+
+interface IProps {
+  open: boolean;
+  mode: TDialogMode;
+  onClose: () => void;
+}
+
+export function TaskFormDialog({ open, mode, onClose }: IProps) {
   const { register, handleSubmit, control } = useForm();
   const dispatch = useAppDispatch();
 

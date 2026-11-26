@@ -15,7 +15,9 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { PriorityBadge } from "./PriorityBadge";
 import { cn } from "@/lib/utils";
-import { STATUS_LABELS, type ITask, type TTaskStatus } from "@/redux/features/tasks";
+import { STATUS_LABELS, TASK_STATUS, type ITask, type TTaskStatus } from "@/redux/features/tasks";
+import { useAppDispatch } from "@/redux/hooks";
+import { removeTask, updateStatus } from "@/redux/features/tasks/tasks.slice";
 
 const STATUS_DOT: Record<TTaskStatus, string> = {
   pending: "bg-slate-400",
@@ -25,15 +27,19 @@ const STATUS_DOT: Record<TTaskStatus, string> = {
 
 interface IProps {
   task: ITask;
-  onEdit: () => void;
+  onEdit: (id: string) => void;
 }
 
 export function TaskItem({ task, onEdit }: IProps) {
-  const handleStatusChange = (value: string) => {
-    console.log(value);
+  const dispatch = useAppDispatch();
+
+  const handleStatusChange = (value: TTaskStatus) => {
+    dispatch(updateStatus({ id: task.id, status: value }));
+    toast.success("Task status updated", { description: task.title });
   };
 
   const handleDelete = () => {
+    dispatch(removeTask(task.id));
     toast.warning("Task deleted", { description: task.title });
   };
 
@@ -53,7 +59,7 @@ export function TaskItem({ task, onEdit }: IProps) {
           </span>
           <span className="text-xs text-muted-foreground">·</span>
           <span className="text-xs text-muted-foreground">
-            {/* {formatDistanceToNow(task.updatedAt, { addSuffix: true })} */}
+            {formatDistanceToNow(task.updatedAt, { addSuffix: true })}
           </span>
         </div>
 
@@ -89,14 +95,14 @@ export function TaskItem({ task, onEdit }: IProps) {
             value={task.status}
             onValueChange={handleStatusChange}
           >
-            {/* {TASK_STATUSES.map((s) => (
+            {TASK_STATUS.map((s) => (
               <DropdownMenuRadioItem key={s} value={s}>
-                {STATUS_LABEL[s]}
+                {STATUS_LABELS[s]}
               </DropdownMenuRadioItem>
-            ))} */}
+            ))}
           </DropdownMenuRadioGroup>
           <DropdownMenuSeparator />
-          <DropdownMenuItem onSelect={() => onEdit()}>
+          <DropdownMenuItem onSelect={() => onEdit(task.id)}>
             <PencilIcon className="size-4" /> Edit
           </DropdownMenuItem>
           <DropdownMenuItem variant="destructive" onSelect={handleDelete}>
