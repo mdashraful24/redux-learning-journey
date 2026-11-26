@@ -1,5 +1,5 @@
 import { createSlice, nanoid, type PayloadAction } from "@reduxjs/toolkit";
-import type { ITask, TInitialState, TTaskStatus } from "./tasks.type";
+import type { ITask, ITaskInput, TInitialState, TTaskStatus } from "./tasks.type";
 
 const initialState: TInitialState = [];
 
@@ -8,7 +8,7 @@ const tasksSlice = createSlice({
     initialState,
     reducers: {
         addTask: {
-            prepare: (input: Pick<ITask, "title" | "description" | "priority" | "status">) => {
+            prepare: (input: ITaskInput) => {
                 const task = {
                     id: nanoid(),
                     title: input.title.trim(),

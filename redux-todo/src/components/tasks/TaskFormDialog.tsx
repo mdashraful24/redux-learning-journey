@@ -12,9 +12,11 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { PRIORITY_LABELS, STATUS_LABELS, TASK_PRIORITIES, TASK_STATUS } from "@/redux/features/tasks";
-import { useAppDispatch } from "@/redux/hooks";
-import { addTask } from "@/redux/features/tasks/tasks.slice";
+import { addTask, PRIORITY_LABELS, selectTaskById, STATUS_LABELS, TASK_PRIORITIES, TASK_STATUS, taskFormDefaultValues, updateTask, type ITaskInput } from "@/redux/features/tasks";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import { useEffect } from "react";
+import type { RootState } from "@/redux/store";
+import { toast } from "sonner";
 
 type TDialogMode = "edit" | "create";
 
@@ -22,15 +24,36 @@ interface IProps {
   open: boolean;
   mode: TDialogMode;
   onClose: () => void;
+  editingId: string | null;
 }
 
-export function TaskFormDialog({ open, mode, onClose }: IProps) {
-  const { register, handleSubmit, control } = useForm();
+export function TaskFormDialog({ open, mode, onClose, editingId }: IProps) {
+  const { register, handleSubmit, control, reset } = useForm<ITaskInput>();
   const dispatch = useAppDispatch();
+  const editing = useAppSelector((state: RootState) => editingId ? selectTaskById(state, editingId) : undefined);
 
-  const onSubmit = (values) => {
-    console.log(values);
-    dispatch(addTask(values));
+  useEffect(() => {
+    if (!open) return;
+    if (mode === "edit" && editing) {
+      reset({
+        title: editing.title,
+        description: editing.description,
+        priority: editing.priority,
+        status: editing.status,
+      });
+    } else {
+      reset(taskFormDefaultValues);
+    }
+  }, [open, mode, editing, reset]);
+
+  const onSubmit = (values: ITaskInput) => {
+    if (mode === "edit" && editingId) {
+      dispatch(updateTask({ id: editingId, change: values }));
+      toast.success("Task updated successfully");
+    } else {
+      dispatch(addTask(values));
+      toast.success("Task created successfully");
+    }
     onClose();
   };
 

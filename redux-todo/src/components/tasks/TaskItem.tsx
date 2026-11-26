@@ -15,9 +15,8 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { PriorityBadge } from "./PriorityBadge";
 import { cn } from "@/lib/utils";
-import { STATUS_LABELS, TASK_STATUS, type ITask, type TTaskStatus } from "@/redux/features/tasks";
+import { removeTask, STATUS_LABELS, TASK_STATUS, updateStatus, type ITask, type TTaskStatus } from "@/redux/features/tasks";
 import { useAppDispatch } from "@/redux/hooks";
-import { removeTask, updateStatus } from "@/redux/features/tasks/tasks.slice";
 
 const STATUS_DOT: Record<TTaskStatus, string> = {
   pending: "bg-slate-400",
